@@ -1,8 +1,11 @@
 import sys
 import math
 from collections import deque
+import re
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
+def split_digits_letters(s):
+    return re.findall(r'\d+|\D+', s)
 upval = ["J", "Q", "K", "A"]
 pl1 = deque()
 debg1 = deque()
@@ -12,27 +15,24 @@ debg2 = deque()
 n = int(input())  # the number of cards for player 1
 for i in range(n):
     cardp_1 = input()
-    debg1.append(cardp_1) # the n cards of player 1
-    if cardp_1[0].isdigit():
-        if cardp_1[0] == 1:
-            val = 10
-        else:
-            val = int(cardp_1[0])
+    debg1.append(cardp_1)
+    # print(split_digits_letters(cardp_1)) # the n cards of player 1
+    if len(split_digits_letters(cardp_1)) == 2:
+        val = int(split_digits_letters(cardp_1)[0])
     else:
-        val = 10 + upval.index(cardp_1[0])
+        val = 11 + upval.index(cardp_1[0])
     pl1.append(val)
 m = int(input())  # the number of cards for player 2
 for i in range(m):
     cardp_2 = input()  # the m cards of player 2
     debg2.append(cardp_2)
-    if cardp_2[0].isdigit():
-        if cardp_2[0] == 1:
-            val = 10
-        else:
-            val = int(cardp_2[0])
+    if len(split_digits_letters(cardp_2)) == 2:
+        val = int(split_digits_letters(cardp_2)[0])
     else:
-        val = 10 + upval.index(cardp_2[0])
+        val = 11 + upval.index(cardp_2[0])
     pl2.append(val)
+# print(debg1)
+# print(debg2)
 # Write an answer using print
 # To debug: print("Debug messages...", file=sys.stderr, flush=True)
 # print(pl1, file=sys.stderr)
@@ -41,55 +41,68 @@ steps = 0
 while pl1.__len__() != 0 and pl2.__len__() != 0:
     steps += 1
     if pl1[0] > pl2[0]:
+        # print("p1 wins with", pl1)
+        # print("p2 lose with", pl2)
         pl1.rotate(-1)
-        # print(pl1, file=sys.stderr)
-        pl1.append(pl2[0])
-        pl2.popleft()
+        pl1.append(pl2.popleft())
+        # print("p1 wins end", pl1)
+        # print("p2 end", pl2)
+        # exit()
     elif pl1[0] < pl2[0]:
+        # print("p2 wins with", pl1)
+        # print("p2 lose with", pl2)
+        pl2.append(pl1.popleft())
         pl2.rotate(-1)
-        pl2.append(pl1[0])
-        pl1.popleft
+        # print("p1 wins end", pl1)
+        # print("p2 end", pl2)
+        # exit()
     elif pl1[0] == pl2[0]:
-        # bank = deque()
-        print("players", pl1, pl2)
-        # bank.append(pl1.popleft())
-        # bank.append(pl2.popleft())
-        # print(bank)
-        # print(pl1, pl2)
-        # exit()
-        p1len = pl1.__len__()
-        p2len = pl2.__len__()
-        start = 4
-        while p1len > 0 and p2len > 0:
-            p1len -= 4
-            p2len -= 4
-            if pl1[start] > pl2[start]:
-                pl1.rotate(-start)
-                while start != 0:
+        st = 4
+        while 1:
+            # print("len1 ", pl1.__len__(), "len2", pl2.__len__(), st)
+            # print("st", st, pl1, pl2)
+            if pl1.__len__() < st + 1 or pl2.__len__() < st + 1:
+                print("PAT")
+                exit()
+            if pl1[st] > pl2[st]:
+                # print(st, "p1st", pl1)
+                # print(st, "p2st",pl2)
+                pl1.rotate(-(st + 1))
+                mm = st
+                while mm + 1 != 0:
                     pl1.append(pl2.popleft())
-                    start -= 1
+                    mm -= 1
+                # print(st,"p1end", pl1)
+                # print(st, "p2end", pl2)
+                # exit()
+                # # print(pl1, file=sys.stderr)
+                # print(pl2, file=sys.stderr)
+                # exit()
                 break
-            elif pl1[start] < pl2[start]:
-                pl2.rotate(-start)
-                while start != 0:
+            if pl1[st] < pl2[st]:
+                # print(st, "SECp1st", pl1)
+                # print(st, "SECp2st",pl2)
+                mm = st
+                while mm + 1 != 0:
                     pl2.append(pl1.popleft())
-                    start -= 1
+                    mm -= 1
+                pl2.rotate(-(st + 1))
+                # print(st, "SECp1st", pl1)
+                # print(st, "SECp2st",pl2)
                 break
+            if pl1[st] == pl2[st]:
+                print("dCh", file=sys.stderr)
+                # print("p1",pl1, file=sys.stderr)
+                # print("p2", pl2, file=sys.stderr)
+                st += 4
             else:
-                start += 4
-                continue
-        if p1len == 0 or p1len == 0:
-            print("PAT")
-            exit()
-        # print(pl1, pl2)
-        # exit()
-            # if pl1.__len__()  < start - 1 or pl2.__len__() < 3:
-        # print("stop")
-    # pl1.popleft()
-    # print("pl1", pl1, file=sys.stderr)
-    # print("pl2", pl2, file=sys.stderr)
-    # print(steps, file=sys.stderr)
-    # exit()
+                print("ERROR")
+                exit()
+        # print("exited")
+    # print("p1",pl1, file=sys.stderr)
+    # print("p2", pl2, file=sys.stderr)
+
+            # exit()
 if pl1.__len__() == 0:
     print("2", steps)
 else:
