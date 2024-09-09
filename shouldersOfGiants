@@ -1,0 +1,70 @@
+import sys
+import math
+
+# Auto-generated code below aims at helping you parse
+# the standard input according to the problem statement.
+class Node:
+    def __init__(self, n, inf):
+        self.name = n
+        self.infl = []
+        self.obj = []
+        self.up = []
+        self.app(inf)
+        self.count=0
+        self.acount = []
+        self.passed = False
+    def app(self, n):
+        self.infl.append(n)
+    def selfCounter(self):
+        for o in self.obj:
+            o.up.append(self)
+
+n = int(input())  # the number of relationships of influence
+inf = []
+for i in range(n):
+    x, y = [int(j) for j in input().split()]
+    inf.append([x,y])
+obj = []
+for ii in inf:
+    if ii[0] not in [o.name for o in obj]:
+        obj.append(Node(ii[0], ii[1]))
+    else:
+        for it in obj:
+            if it.name == ii[0]:
+                it.app(ii[1])
+start = obj[0].infl
+for iq in obj:
+    for iw in iq.infl:
+        if iw not in [o.name for o in obj] and iw != -1:
+            obj.append(Node(iw, -1))
+        for ix in obj:
+            if ix.name == iw:
+                iq.obj.append(ix)
+known = []
+end = False
+for o in obj:
+    if len(o.obj) == 0:
+        o.count = 1
+        known.append(o)
+while end == False:
+    for o in obj:
+        if o.passed == False and o.infl != 0:
+            for ir in o.obj:
+                if ir in known and ir.name in o.infl:
+                    o.acount.append(ir.count + 1)
+                    if ir.count + 1 > o.count:
+                        o.count = ir.count + 1
+                    o.infl.remove(ir.name)
+                    if len(o.infl) == 0:
+                        known.append(o)
+    end = True
+    for it in obj:
+        if len(it.infl) == 0 or it.passed or it.infl[0] == -1:
+            it.passed = True
+        else:
+            end = False
+max = 0
+for it in obj:
+    if it.count > max:
+        max = it.count
+print(max)
