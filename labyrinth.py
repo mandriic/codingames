@@ -2,12 +2,7 @@ import sys
 import math
 import threading
 import queue
-# Auto-generated code below aims at helping you parse
-# the standard input according to the problem statement.
 
-# r: number of rows.
-# c: number of columns.
-# a: number of rounds between the time the alarm countdown is activated and the time the alarm goes off.
 class Node:
     def __init__(self,y,x,visited=False, teleport=False, ch=""):
         self.up = None
@@ -27,7 +22,6 @@ class Node:
         self.cost = 0
         self.unit = False
 
-
 def printMap():
     for indexR,row in enumerate(listNodes):
         for indexN,node in enumerate(row):
@@ -37,7 +31,6 @@ def printMap():
 
 
 def checkNode(node, map):
-
     if (map[node.y][node.x + 1] == '.' or map[node.y][node.x + 1] == 'C') and node.right is None:
         node.visited = True
         node.right = Node(node.y,node.x + 1)
@@ -73,7 +66,6 @@ def checkNode(node, map):
         if map[node.y - 1][node.x] == 'C':
             node.up.c = True
 
-
 def goBack(node, map):
     print("check", file=sys.stderr)
     if node.right == node.parent:
@@ -99,7 +91,6 @@ def createNodes(all_map):
             listNodes.append(rowlst)
             print(file=sys.stderr)
 
-
 def   update_nodes(all_map):
     for indexR,row in enumerate(listNodes):
         for indexN,node in enumerate(row):
@@ -107,7 +98,6 @@ def   update_nodes(all_map):
             print(node.char, file=sys.stderr, end="")
         print(file=sys.stderr)
     print("fin",file=sys.stderr)
-    
 
 def parseNodes():
     i = 0
@@ -120,30 +110,17 @@ def parseNodes():
                 listNodes[i][i2].teleport = True
             if listNodes[i][i2].char == 'C':
                 listNodes[i][i2].c = True
-            #if listNodes[i][i2].char != '?':
-            #    print("FOR CHAR ->",listNodes[i][i2].char, file=sys.stderr)
             if i != 0:
                 listNodes[i][i2].up = listNodes[i - 1][i2]
-            #    if listNodes[i][i2].up.char != '?':
-            #        print(" UP ",listNodes[i][i2].up.char, file=sys.stderr)
             if i2 + 1 != c:
                 listNodes[i][i2].right = listNodes[i][i2 + 1]
-            #    if listNodes[i][i2].right.char != '?':
-            #        print(" RIGHT ",listNodes[i][i2].right.char, file=sys.stderr)
             if i + 1 != r:
                 listNodes[i][i2].down = listNodes[i + 1][i2]
-             #   if listNodes[i][i2].down.char != '?':
-             #       print(" DOWN ",listNodes[i][i2].down.char, file=sys.stderr)
             if i2 != 0:
                 listNodes[i][i2].left = listNodes[i][i2 - 1]
-             #   if listNodes[i][i2].left.char != '?':
-             #       print(" LEFT ",listNodes[i][i2].left.char, file=sys.stderr)
-
             i2 += 1
-        #print( file=sys.stderr)
         i+= 1
 def findC(y=None,x=None,pointer=None, father=None):
-
     print("pointer", pointer.char, pointer, file=sys.stderr)
     if pointer.up.char == 'C' or pointer.down.char == 'C' or pointer.left.char == 'C' or pointer.right.char == 'C':
         if pointer.up.char == 'C':
@@ -161,7 +138,6 @@ def findC(y=None,x=None,pointer=None, father=None):
             pointer.up.parent = pointer
             print("UP")
             return False
-                #findC(pointer=pointer.up, father=pointer)
     if pointer.left.left and pointer.left.left.left and pointer.left.left.left.char == '?':
         if pointer.left.char == "C" or (pointer.left.char == '.'and (pointer.left != pointer.parent or \
         (pointer.down.char == "#" and pointer.right.char == "#" and pointer.right.char == "#"))):
@@ -179,10 +155,6 @@ def findC(y=None,x=None,pointer=None, father=None):
         (pointer.up.char == "#" and pointer.right.char == "#" and pointer.left.char == "#"))):
             pointer.down.parent = pointer
             print("DOWN")
-        #findC(pointer=pointer.down, father=pointer)
-
-       # findC(pointer=pointer.right, father=pointer)
-
     print("c not exists", file=sys.stderr)
     return False
 
@@ -201,6 +173,7 @@ def correctPrior(map):
             prior[1] = 2
     print(prior[0], prior[1], file=sys.stderr)
     printMap()
+    
 def goBack(pointer):
     print(pointer,"\n" ,pointer.left,"\n", pointer.left.parent,"\n",pointer.right,"\n", pointer.right.parent, file=sys.stderr)
     if pointer.parent == pointer.left:
@@ -215,6 +188,7 @@ def goBack(pointer):
     if pointer.parent == pointer.down:
         pointer.visited = True
         print("DOWN")
+        
 def goRight(pointer):
     if (pointer.right.char != '#'and pointer.right.visited != True):
         pointer.right.parent = pointer
@@ -223,6 +197,7 @@ def goRight(pointer):
         return True
     else:
         return False
+        
 def goUp(pointer):
     if (pointer.up.char != '#' and pointer.up.visited != True):
         pointer.up.parent = pointer
@@ -231,6 +206,7 @@ def goUp(pointer):
         return True
     else:
         return False
+        
 def goDown(pointer):
     if (pointer.down.char != '#' and pointer.down.visited != True):
         pointer.down.parent = pointer
@@ -239,6 +215,7 @@ def goDown(pointer):
         return True
     else:
         return False
+        
 def goLeft(pointer):
     if (pointer.left.char != '#' and pointer.left.visited != True):
         pointer.left.parent = pointer
@@ -247,6 +224,7 @@ def goLeft(pointer):
         return True
     else:
         return False
+        
 def go2prior(y,x, pointer):
     if all_map[2][2] == '?':
         if goUp(pointer) == False and goLeft(pointer) == False and goDown(pointer) == False  and goRight(pointer) == False :
@@ -260,6 +238,7 @@ def go2prior(y,x, pointer):
     else:
         if goDown(pointer) == False and goLeft(pointer) == False and goRight(pointer) == False and goUp(pointer) == False:
             goBack(pointer)
+            
 def goTeleport(y,x,pointer, root):
     pointer.up.cost = 1
     pointer.down.cost = 1
